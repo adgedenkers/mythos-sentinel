@@ -1,0 +1,4 @@
+users:
+  - username: adriaan
+    api_key: adriaan-harold-denkers
+    role: admin
