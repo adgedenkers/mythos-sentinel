@@ -1,0 +1,30 @@
+[
+  {
+    "id": "0023",
+    "name": "extend-helpers-install-rollback",
+    "file": "patch__0023__extend-helpers-install-rollback.zip",
+    "applied_at": "2025-08-29T15:57:19Z",
+    "status": "applied"
+  },
+  {
+    "id": "0024",
+    "name": "cli-and-auto-restart",
+    "file": "patch__0024__cli-and-auto-restart.zip",
+    "applied_at": "2025-08-29T15:57:19Z",
+    "status": "applied"
+  },
+  {
+    "id": "",
+    "name": "0022__mirror-endpoint",
+    "file": "patch__0022__mirror-endpoint.zip",
+    "applied_at": "2025-08-29T16:30:44Z",
+    "status": "applied"
+  },
+  {
+    "id": "",
+    "name": "0025__add-mirror-endpoint",
+    "file": "patch__0025__add-mirror-endpoint.zip",
+    "applied_at": "2025-08-29T17:35:40Z",
+    "status": "applied"
+  }
+]
