@@ -2,92 +2,13 @@ openapi: 3.1.0
 info:
   title: Mythos Sentinel API
   version: "0.1"
-  description: |
-    Minimal API for Mythos Sentinel. `/health` requires the `x-api-key` header.
-    `/version` and `/mirror` are public for convenience.
 servers:
   - url: https://loom.denkers.co
-components:
-  securitySchemes:
-    ApiKeyAuth:
-      type: apiKey
-      in: header
-      name: x-api-key
-  schemas:
-    HealthResponse:
-      type: object
-      required: [status, message]
-      properties:
-        status:
-          type: string
-          example: ok
-        message:
-          type: string
-          example: Mythos Sentinel API is alive
-    ErrorResponse:
-      type: object
-      required: [detail]
-      properties:
-        detail:
-          type: string
-          example: Unauthorized
-    VersionResponse:
-      type: object
-      required: [version]
-      properties:
-        version:
-          type: string
-          example: "0.0.5"
-    MirrorRequest:
-      type: object
-      description: Arbitrary JSON payload that will be echoed by /mirror.
-      additionalProperties: true
-    MirrorResponse:
-      type: object
-      required: [method, path, query, headers, client]
-      properties:
-        method:
-          type: string
-          example: GET
-        path:
-          type: string
-          example: /mirror
-        query:
-          type: object
-          additionalProperties: true
-          example: {}
-        sanitized_query_params:
-          type: array
-          items:
-            type: string
-        headers:
-          type: object
-          additionalProperties: true
-        sanitized_headers:
-          type: array
-          items:
-            type: string
-        body:
-          description: Raw body as received (string for GET, may be object if JSON POST).
-          oneOf:
-            - type: string
-            - type: object
-              additionalProperties: true
-        client:
-          type: object
-          required: [ip]
-          properties:
-            ip:
-              type: string
-              example: 127.0.0.1
-            user-agent:
-              type: string
-              description: User agent string if available.
 paths:
   /health:
     get:
       operationId: getHealth
-      summary: Health check (requires x-api-key)
+      summary: Health check (requires API key)
       security:
         - ApiKeyAuth: []
       responses:
@@ -98,18 +19,18 @@ paths:
               schema:
                 $ref: "#/components/schemas/HealthResponse"
         "401":
-          description: Unauthorized (missing or invalid API key)
+          description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/Error"
   /version:
     get:
       operationId: getVersion
-      summary: API version (public)
+      summary: Get API version
       responses:
         "200":
-          description: Current API version
+          description: Current version
           content:
             application/json:
               schema:
@@ -117,27 +38,120 @@ paths:
   /mirror:
     get:
       operationId: mirrorGet
-      summary: Echo request details (public)
+      summary: Echo request info (GET)
       responses:
         "200":
-          description: Mirror of request details
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/MirrorResponse"
     post:
       operationId: mirrorPost
-      summary: Echo POST body and request details (public)
+      summary: Echo request info (POST)
       requestBody:
-        required: true
+        required: false
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/MirrorRequest"
       responses:
         "200":
-          description: Mirror of request details including body
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/MirrorResponse"
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+  schemas:
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ok
+        message:
+          type: string
+          example: Mythos Sentinel API is alive
+      required: [status, message]
+      additionalProperties: false
+    VersionResponse:
+      type: object
+      properties:
+        version:
+          type: string
+          example: "0.0.5"
+      required: [version]
+      additionalProperties: false
+    MirrorRequest:
+      type: object
+      properties:
+        body:
+          description: Raw request body (if any)
+          type: string
+        query:
+          description: Query parameters
+          type: object
+          additionalProperties:
+            type: string
+        headers:
+          description: Headers sent with the request
+          type: object
+          additionalProperties:
+            type: string
+        method:
+          type: string
+          example: GET
+        path:
+          type: string
+          example: /mirror
+      additionalProperties: true
+    MirrorResponse:
+      type: object
+      properties:
+        method:
+          type: string
+          example: GET
+        path:
+          type: string
+          example: /mirror
+        query:
+          type: object
+          additionalProperties:
+            type: string
+        sanitized_query_params:
+          type: array
+          items:
+            type: string
+        headers:
+          type: object
+          additionalProperties:
+            type: string
+        sanitized_headers:
+          type: array
+          items:
+            type: string
+        body:
+          type: string
+        client:
+          type: object
+          properties:
+            ip:
+              type: string
+            user-agent:
+              type: string
+          additionalProperties: true
+      additionalProperties: true
+    Error:
+      type: object
+      properties:
+        detail:
+          oneOf:
+            - type: string
+            - type: object
+      additionalProperties: true
