@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 from app.routes import health
+from app.routes import version as version_route
+from app.routes import mirror
 
 app = FastAPI(title="Mythos Sentinel API", version="0.1")
+app.include_router(version_route.router)
 
 app.include_router(health.router)
 app.include_router(mirror.router)
@@ -19,3 +22,5 @@ async def custom_openapi():
     # Force servers block for GPT Actions validation
     openapi_schema["servers"] = [{"url": "https://loom.denkers.co/"}]
     return JSONResponse(openapi_schema)
+from app.routes import version as version_route
+app.include_router(version_route.router)
