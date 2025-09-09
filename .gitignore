@@ -1,6 +1,5 @@
 .venv/
 *.env
-*.yaml
 *.json__*
 patch-registry.log
 __pycache__/
